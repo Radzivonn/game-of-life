@@ -13,7 +13,7 @@ const genCounter = document.getElementById('genCount');
 const dimensionX = canvas.width;
 const dimensionY = canvas.height;
 
-const CELL_SCALE = 8;
+const CELL_SCALE = 4; // Scaling cells amount by dimension
 const CELL_COUNT_X = dimensionX / CELL_SCALE;
 const CELL_COUNT_Y = dimensionY / CELL_SCALE;
 
@@ -34,24 +34,6 @@ const initCells = () => {
       row.push(Math.random() < ALIVE_RATE ? true : false);
     }
     cells.push(row);
-  }
-};
-
-const drawGrid = () => {
-  for (let y = 1; y < CELL_COUNT_Y; y++) {
-    for (let x = 1; x < CELL_COUNT_X; x++) {
-      const dy = y * CELL_SCALE;
-      const dx = x * CELL_SCALE;
-
-      ctx.beginPath();
-      ctx.moveTo(0, dy);
-      ctx.lineTo(dimensionX, dy);
-      ctx.stroke();
-
-      ctx.moveTo(dx, 0);
-      ctx.lineTo(dx, dimensionY);
-      ctx.stroke();
-    }
   }
 };
 
@@ -79,7 +61,6 @@ const drawCells = () => {
 
 const drawField = () => {
   drawCells();
-  // drawGrid(); // !very bad performance with grid drawing
 };
 
 const fpmY = (coord) => {
@@ -140,7 +121,6 @@ const animate = () => {
   drawField();
   generationCounter++;
   genCounter.innerHTML = generationCounter;
-
   animationID = requestAnimationFrame(() => animate());
 };
 
