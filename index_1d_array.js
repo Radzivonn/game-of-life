@@ -1,10 +1,12 @@
 const canvas = document.getElementById('mainCanvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d', {
+  alpha: false,
+});
 ctx.fillStyle = 'white';
 
 const PALLETTE_K = 1.1; // RGB casting factor
 
-const stopButton = document.getElementById('stopButton');
+const restartButton = document.getElementById('restartButton');
 const pauseButton = document.getElementById('pauseButton');
 const continueButton = document.getElementById('continueButton');
 
@@ -28,6 +30,7 @@ let cells = [];
 let generationCounter = 0;
 
 const initCells = () => {
+  cells = [];
   for (let y = 0; y < CELL_COUNT_Y; y++) {
     for (let x = 0; x < CELL_COUNT_X; x++) {
       cells.push(Math.random() < ALIVE_RATE ? 1 : 0);
@@ -132,8 +135,16 @@ const stopAnimation = () => {
   }
 };
 
+const restartAnimation = () => {
+  generationCounter = 0;
+  stopAnimation();
+  initCells();
+  startAnimation();
+};
+
 pauseButton.addEventListener('click', () => stopAnimation());
 continueButton.addEventListener('click', () => startAnimation());
+restartButton.addEventListener('click', () => restartAnimation());
 
 initCells();
 startAnimation();
