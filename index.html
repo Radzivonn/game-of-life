@@ -8,13 +8,22 @@
   </head>
   <body>
     <div class="wrapper">
-      <p>Amount of generations: <span id="genCount">0</span></p>
-      <canvas id="mainCanvas" width="1280" height="720"></canvas>
-      <div class="buttons">
+      <aside>
+        <div class="pallette-toggle">
+          <p>RBG pallette</p>
+          <label class="switch">
+            <input type="checkbox" id="RGB-checkbox" />
+            <span class="slider round"></span>
+          </label>
+        </div>
         <button id="restartButton">RESTART</button>
         <button id="pauseButton">PAUSE</button>
         <button id="continueButton">CONTINUE</button>
-      </div>
+      </aside>
+      <main>
+        <p>Amount of generations: <span id="genCount">0</span></p>
+        <canvas id="mainCanvas" width="1280" height="720"></canvas>
+      </main>
     </div>
     <script src="index_1d_array.js"></script>
   </body>

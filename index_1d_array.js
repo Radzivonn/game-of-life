@@ -1,7 +1,5 @@
 const canvas = document.getElementById('mainCanvas');
-const ctx = canvas.getContext('2d', {
-  // alpha: false,
-});
+const ctx = canvas.getContext('2d');
 ctx.fillStyle = 'white';
 
 const PALLETTE_K = 1.2; // RGB casting factor
@@ -9,6 +7,7 @@ const PALLETTE_K = 1.2; // RGB casting factor
 const restartButton = document.getElementById('restartButton');
 const pauseButton = document.getElementById('pauseButton');
 const continueButton = document.getElementById('continueButton');
+const RGBToggle = document.getElementById('RGB-checkbox');
 
 const genCounter = document.getElementById('genCount');
 
@@ -21,13 +20,15 @@ const CELL_COUNT_Y = dimensionY / CELL_SCALE;
 
 const ALIVE_RATE = 0.3; // percentage of living cells in the first generation
 
-console.log('DIMENSION ', dimensionX, dimensionY);
-console.log('CELL COUNT', CELL_COUNT_X, CELL_COUNT_Y);
+console.log('CANVAS DIMENSION ', dimensionX, dimensionY);
+console.log('CELL DIMENSION ', CELL_COUNT_X, CELL_COUNT_Y);
+console.log('NUMBER OF CELLS ', CELL_COUNT_X * CELL_COUNT_Y);
 
 let cells = [];
 let generationCounter = 0;
 let animationID;
-let paused = true;
+let isPaused = true;
+let isPalletteON = false;
 
 const initCells = () => {
   cellsArr = [];
@@ -39,19 +40,26 @@ const initCells = () => {
   return cellsArr;
 };
 
+const setFillColorByCoord = (x, y) => {
+  const colorScale = CELL_SCALE;
+  ctx.fillStyle = `rgb(${Math.floor(PALLETTE_K * y) * colorScale}, ${Math.floor(
+    355 - PALLETTE_K * x * colorScale,
+  )}, ${Math.floor(
+    100 - PALLETTE_K * y + Math.floor(x / PALLETTE_K - 100) * colorScale,
+  )})`;
+};
+
+const drawCell = (x, y, isAlive) => {
+  if (isAlive) {
+    if (isPalletteON) setFillColorByCoord(x, y);
+    ctx.fillRect(x * CELL_SCALE, y * CELL_SCALE, CELL_SCALE, CELL_SCALE);
+  } else ctx.clearRect(x * CELL_SCALE, y * CELL_SCALE, CELL_SCALE, CELL_SCALE);
+};
+
 const drawCells = (cells) => {
   for (let y = 0; y < CELL_COUNT_Y; y++) {
     for (let x = 0; x < CELL_COUNT_X; x++) {
-      if (cells[y * CELL_COUNT_X + x]) {
-        /* Uncomment to color the cells with some palette */
-        // ctx.fillStyle = `rgb(${Math.floor(PALLETTE_K * y)}, ${Math.floor(
-        //   255 - PALLETTE_K * x,
-        // )}, ${Math.floor(255 - PALLETTE_K * y)})`;
-
-        ctx.fillRect(x * CELL_SCALE, y * CELL_SCALE, CELL_SCALE, CELL_SCALE);
-      } else {
-        ctx.clearRect(x * CELL_SCALE, y * CELL_SCALE, CELL_SCALE, CELL_SCALE);
-      }
+      drawCell(x, y, cells[y * CELL_COUNT_X + x]);
     }
   }
 };
@@ -124,16 +132,16 @@ const animate = () => {
 };
 
 const startAnimation = () => {
-  if (paused) {
+  if (isPaused) {
     animationID = requestAnimationFrame(animate);
-    paused = false;
+    isPaused = false;
   }
 };
 
 const stopAnimation = () => {
-  if (!paused) {
+  if (!isPaused) {
     cancelAnimationFrame(animationID);
-    paused = true;
+    isPaused = true;
   }
 };
 
@@ -144,6 +152,28 @@ const restartAnimation = () => {
   startAnimation();
 };
 
+const changeColor = (checked) => {
+  if (!checked) ctx.fillStyle = 'white';
+  isPalletteON = checked;
+  if (isPaused) drawCells(cells);
+};
+
+const drawCellsByMouse = (e) => {
+  e.preventDefault();
+  // if left mouse button pressed set alive cell
+  // but if right mouse button pressed set empty cell
+  if (e.buttons === 1 || e.buttons === 2) {
+    const x = Math.floor(e.offsetX / CELL_SCALE);
+    const y = Math.floor(e.offsetY / CELL_SCALE);
+    cells[y * CELL_COUNT_X + x] = e.buttons === 1;
+    if (isPaused) drawCell(x, y, e.buttons === 1);
+  }
+};
+
+canvas.addEventListener('mousedown', (e) => drawCellsByMouse(e));
+canvas.addEventListener('mousemove', (e) => drawCellsByMouse(e));
+canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+RGBToggle.addEventListener('change', (e) => changeColor(e.target.checked));
 pauseButton.addEventListener('click', () => stopAnimation());
 continueButton.addEventListener('click', () => startAnimation());
 restartButton.addEventListener('click', () => restartAnimation());
