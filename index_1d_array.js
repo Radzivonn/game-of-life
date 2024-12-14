@@ -2,19 +2,31 @@ const canvas = document.getElementById('mainCanvas');
 const ctx = canvas.getContext('2d');
 ctx.fillStyle = 'white';
 
+let FPS_LIMIT = 144;
+let FPS = 0;
+let lastTimestamp = 0;
+let lastTimestampFPSCounter = 0;
+let frameCount = 0;
+
 const PALLETTE_K = 1.2; // RGB casting factor
+
+const fpsCounter = document.getElementById('fpsCounter');
+const fpsInput = document.getElementById('fpsInput');
+const acceptFPSButton = document.getElementById('acceptFPSsettingsButton');
+
+const RGBToggle = document.getElementById('RGB-checkbox');
 
 const restartButton = document.getElementById('restartButton');
 const pauseButton = document.getElementById('pauseButton');
 const continueButton = document.getElementById('continueButton');
-const RGBToggle = document.getElementById('RGB-checkbox');
+const removeButton = document.getElementById('removeButton');
 
 const genCounter = document.getElementById('genCount');
 
 const dimensionX = canvas.width;
 const dimensionY = canvas.height;
 
-const CELL_SCALE = 4; // scaling cells amount by dimension
+const CELL_SCALE = 10; // scaling cells amount by dimension
 const CELL_COUNT_X = dimensionX / CELL_SCALE;
 const CELL_COUNT_Y = dimensionY / CELL_SCALE;
 
@@ -30,11 +42,11 @@ let animationID;
 let isPaused = true;
 let isPalletteON = false;
 
-const initCells = () => {
+const initCells = (aliveRate) => {
   cellsArr = [];
   for (let y = 0; y < CELL_COUNT_Y; y++) {
     for (let x = 0; x < CELL_COUNT_X; x++) {
-      cellsArr.push(Math.random() < ALIVE_RATE ? 1 : 0);
+      cellsArr.push(Math.random() < aliveRate ? 1 : 0);
     }
   }
   return cellsArr;
@@ -123,12 +135,31 @@ const getNewGeneration = (cells) => {
   return newGeneration;
 };
 
-const animate = () => {
-  cells = getNewGeneration(cells);
-  drawField(cells);
-  generationCounter++;
-  genCounter.innerHTML = generationCounter;
-  animationID = requestAnimationFrame(() => animate());
+const countFPS = (timestamp) => {
+  frameCount++;
+  if (lastTimestampFPSCounter !== 0) {
+    let elapsed = timestamp - lastTimestampFPSCounter;
+    if (elapsed > 1000) {
+      FPS = frameCount;
+      fpsCounter.innerHTML = FPS;
+      frameCount = 0;
+      lastTimestampFPSCounter = timestamp;
+    }
+  } else {
+    lastTimestampFPSCounter = timestamp;
+  }
+};
+
+const animate = (timestamp) => {
+  if (timestamp - lastTimestamp > 1000 / FPS_LIMIT) {
+    countFPS(timestamp);
+    lastTimestamp = timestamp;
+    cells = getNewGeneration(cells);
+    drawField(cells);
+    generationCounter++;
+    genCounter.innerHTML = generationCounter;
+  }
+  animationID = requestAnimationFrame((timestamp) => animate(timestamp));
 };
 
 const startAnimation = () => {
@@ -141,6 +172,7 @@ const startAnimation = () => {
 const stopAnimation = () => {
   if (!isPaused) {
     cancelAnimationFrame(animationID);
+    fpsCounter.innerHTML = 0;
     isPaused = true;
   }
 };
@@ -148,8 +180,23 @@ const stopAnimation = () => {
 const restartAnimation = () => {
   generationCounter = 0;
   stopAnimation();
-  cells = initCells();
+  cells = initCells(ALIVE_RATE);
   startAnimation();
+};
+
+const removeAll = () => {
+  stopAnimation();
+  cells = initCells(0);
+  drawCells(cells);
+};
+
+const acceptFPS = () => {
+  if (fpsInput.checkValidity()) {
+    FPS_LIMIT = fpsInput.value;
+    fpsInput.value = '';
+    frameCount = 0;
+    lastTimestampFPSCounter = 0;
+  }
 };
 
 const changeColor = (checked) => {
@@ -173,10 +220,12 @@ const drawCellsByMouse = (e) => {
 canvas.addEventListener('mousedown', (e) => drawCellsByMouse(e));
 canvas.addEventListener('mousemove', (e) => drawCellsByMouse(e));
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+acceptFPSButton.addEventListener('click', () => acceptFPS());
 RGBToggle.addEventListener('change', (e) => changeColor(e.target.checked));
 pauseButton.addEventListener('click', () => stopAnimation());
 continueButton.addEventListener('click', () => startAnimation());
 restartButton.addEventListener('click', () => restartAnimation());
+removeButton.addEventListener('click', () => removeAll());
 
-cells = initCells();
+cells = initCells(ALIVE_RATE);
 startAnimation();

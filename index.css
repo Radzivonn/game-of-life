@@ -79,12 +79,36 @@ button:hover {
   opacity: 0.8;
 }
 
-#pauseButton {
+input[type='number'] {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  display: none;
+}
+
+#fpsInput {
+  width: 100px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: inherit;
+  border: 3px solid white;
+  outline: none;
+  font-size: 16px;
+  color: white;
+}
+
+#pauseButton,
+#removeButton {
   background-color: rgb(216, 25, 25);
 }
 
 #continueButton,
-#restartButton {
+#restartButton,
+#acceptFPSsettingsButton {
   background-color: rgb(30, 30, 30);
 }
 
