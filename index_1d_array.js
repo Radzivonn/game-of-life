@@ -14,6 +14,10 @@ const fpsCounter = document.getElementById('fpsCounter');
 const fpsInput = document.getElementById('fpsInput');
 const acceptFPSButton = document.getElementById('acceptFPSsettingsButton');
 
+const fieldWidthInput = document.getElementById('fieldWidthInput');
+const fieldHeightInput = document.getElementById('fieldHeightInput');
+const acceptDimensionButton = document.getElementById('acceptDimensionButton');
+
 const RGBToggle = document.getElementById('RGB-checkbox');
 
 const restartButton = document.getElementById('restartButton');
@@ -23,16 +27,13 @@ const removeButton = document.getElementById('removeButton');
 
 const genCounter = document.getElementById('genCount');
 
-const dimensionX = canvas.width;
-const dimensionY = canvas.height;
-
 const CELL_SCALE = 4; // scaling cells amount by dimension
-const CELL_COUNT_X = dimensionX / CELL_SCALE;
-const CELL_COUNT_Y = dimensionY / CELL_SCALE;
+let CELL_COUNT_X = canvas.width / CELL_SCALE;
+let CELL_COUNT_Y = canvas.height / CELL_SCALE;
 
 const ALIVE_RATE = 0.3; // percentage of living cells in the first generation
 
-console.log('CANVAS DIMENSION ', dimensionX, dimensionY);
+console.log('CANVAS DIMENSION ', canvas.width, canvas.height);
 console.log('CELL DIMENSION ', CELL_COUNT_X, CELL_COUNT_Y);
 console.log('NUMBER OF CELLS ', CELL_COUNT_X * CELL_COUNT_Y);
 
@@ -43,13 +44,14 @@ let isPaused = true;
 let isPalletteON = false;
 
 const initCells = (aliveRate) => {
-  cellsArr = [];
+  cellsArray = [];
   for (let y = 0; y < CELL_COUNT_Y; y++) {
     for (let x = 0; x < CELL_COUNT_X; x++) {
-      cellsArr.push(Math.random() < aliveRate ? 1 : 0);
+      cellsArray.push(Math.random() < aliveRate ? 1 : 0);
     }
   }
-  return cellsArr;
+  console.log(cellsArray);
+  return cellsArray;
 };
 
 const setFillColorByCoord = (x, y) => {
@@ -187,11 +189,19 @@ const restartAnimation = () => {
 const removeAll = () => {
   stopAnimation();
   cells = initCells(0);
+  generationCounter = 0;
+  genCounter.innerHTML = generationCounter;
   drawCells(cells);
 };
 
+const changeColor = (checked) => {
+  if (!checked) ctx.fillStyle = 'white';
+  isPalletteON = checked;
+  if (isPaused) drawCells(cells);
+};
+
 const acceptFPS = () => {
-  if (fpsInput.checkValidity()) {
+  if (fpsInput.checkValidity() && fpsInput.value) {
     FPS_LIMIT = fpsInput.value;
     fpsInput.value = '';
     frameCount = 0;
@@ -199,10 +209,26 @@ const acceptFPS = () => {
   }
 };
 
-const changeColor = (checked) => {
-  if (!checked) ctx.fillStyle = 'white';
-  isPalletteON = checked;
-  if (isPaused) drawCells(cells);
+changeFieldDimension = (width, height) => {
+  canvas.width = width;
+  canvas.height = height;
+  CELL_COUNT_X = width / CELL_SCALE;
+  CELL_COUNT_Y = height / CELL_SCALE;
+};
+
+acceptCanvasDimension = () => {
+  if (
+    fieldWidthInput.checkValidity() &&
+    fieldHeightInput.checkValidity() &&
+    fieldWidthInput.value &&
+    fieldHeightInput.value
+  ) {
+    changeFieldDimension(fieldWidthInput.value, fieldHeightInput.value);
+    fieldWidthInput.value = '';
+    fieldHeightInput.value = '';
+    if (!isPalletteON) ctx.fillStyle = 'white';
+    restartAnimation();
+  }
 };
 
 const drawCellsByMouse = (e) => {
@@ -220,8 +246,9 @@ const drawCellsByMouse = (e) => {
 canvas.addEventListener('mousedown', (e) => drawCellsByMouse(e));
 canvas.addEventListener('mousemove', (e) => drawCellsByMouse(e));
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-acceptFPSButton.addEventListener('click', () => acceptFPS());
 RGBToggle.addEventListener('change', (e) => changeColor(e.target.checked));
+acceptFPSButton.addEventListener('click', () => acceptFPS());
+acceptDimensionButton.addEventListener('click', () => acceptCanvasDimension());
 pauseButton.addEventListener('click', () => stopAnimation());
 continueButton.addEventListener('click', () => startAnimation());
 restartButton.addEventListener('click', () => restartAnimation());

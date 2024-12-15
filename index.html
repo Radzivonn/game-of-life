@@ -24,6 +24,7 @@
         <input
           id="fpsInput"
           type="number"
+          placeholder="FPS limit 1-144"
           min="1"
           max="144"
           step="1"
@@ -31,6 +32,29 @@
           maxlength="3"
         />
         <button id="acceptFPSsettingsButton">ACCEPT</button>
+        <div class="field-dimension-settings">
+          <input
+            id="fieldWidthInput"
+            type="number"
+            placeholder="width 300-1280px"
+            min="300"
+            max="1280"
+            step="1"
+            minlength="1"
+            maxlength="4"
+          />
+          <input
+            id="fieldHeightInput"
+            type="number"
+            placeholder="height 300-720px"
+            min="300"
+            max="720"
+            step="1"
+            minlength="1"
+            maxlength="3"
+          />
+          <button id="acceptDimensionButton">ACCEPT</button>
+        </div>
       </aside>
       <main>
         <p>Number of generations: <span id="genCount">0</span></p>
