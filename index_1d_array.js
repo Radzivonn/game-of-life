@@ -26,7 +26,7 @@ const genCounter = document.getElementById('genCount');
 const dimensionX = canvas.width;
 const dimensionY = canvas.height;
 
-const CELL_SCALE = 10; // scaling cells amount by dimension
+const CELL_SCALE = 4; // scaling cells amount by dimension
 const CELL_COUNT_X = dimensionX / CELL_SCALE;
 const CELL_COUNT_Y = dimensionY / CELL_SCALE;
 
@@ -212,7 +212,7 @@ const drawCellsByMouse = (e) => {
   if (e.buttons === 1 || e.buttons === 2) {
     const x = Math.floor(e.offsetX / CELL_SCALE);
     const y = Math.floor(e.offsetY / CELL_SCALE);
-    cells[y * CELL_COUNT_X + x] = e.buttons === 1;
+    cells[y * CELL_COUNT_X + x] = e.buttons === 1 ? 1 : 0;
     if (isPaused) drawCell(x, y, e.buttons === 1);
   }
 };
