@@ -16,20 +16,24 @@ live or dead; births and deaths occur simultaneously, and the discrete moment at
 The rules continue to be applied repeatedly to create further generations.
 
 ## Overview
-![image](https://github.com/user-attachments/assets/4a42aa1c-14ec-40c6-90b4-a3cc672c6ffa)
+![image](https://github.com/user-attachments/assets/808130da-f33c-457a-a7cb-603cc402b1b0)
 
 ## Game field
-![image](https://github.com/user-attachments/assets/8166b6eb-32e2-49a2-abe2-bd5209e5beef)
+![image](https://github.com/user-attachments/assets/dcbcfff8-4ee4-4037-a205-9494879a362e)
 
 ## Number of past generations
-![image](https://github.com/user-attachments/assets/37ef7d06-2fb9-4c44-81a9-252a4c6a0050)
+![image](https://github.com/user-attachments/assets/c1b8c8d2-b61e-4bf4-99c7-41975742b500)
 
-## Сontrol buttons
-![image](https://github.com/user-attachments/assets/1e97d52c-e056-4112-abfb-dcab12f9636c)
+## Сontrol panel
+![image](https://github.com/user-attachments/assets/c02bfab7-7a1d-417d-b578-8aa26e56fdca)
 
+* FPS counter
+* Toggle to turn on/off color pallette
 * Restart button - сreates a new field randomly filled with living cells and starts counting generations all over again
 * Pause button - pauses the simulation at the generation on which pause was pressed
 * Continue button - unpauses the simulation
+* Remove button - "kills" all cells
+* FPS limit settings
 
 The index_2d_array script implements a standard game on a 2d array  
 ![image](https://github.com/user-attachments/assets/9a55eb40-72b3-4b4c-a1ab-6182d30d0f60)
