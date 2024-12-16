@@ -10,6 +10,12 @@ let frameCount = 0;
 
 const PALLETTE_K = 1.2; // RGB casting factor
 
+const CELL_SCALE = 4; // scaling cells amount by dimension
+let CELL_COUNT_X = canvas.width / CELL_SCALE;
+let CELL_COUNT_Y = canvas.height / CELL_SCALE;
+
+let ALIVE_RATE = 0.3; // percentage of living cells in the first generation
+
 const fpsCounter = document.getElementById('fpsCounter');
 const fpsInput = document.getElementById('fpsInput');
 const acceptFPSButton = document.getElementById('acceptFPSsettingsButton');
@@ -17,6 +23,11 @@ const acceptFPSButton = document.getElementById('acceptFPSsettingsButton');
 const fieldWidthInput = document.getElementById('fieldWidthInput');
 const fieldHeightInput = document.getElementById('fieldHeightInput');
 const acceptDimensionButton = document.getElementById('acceptDimensionButton');
+
+const aliveRateSpan = document.getElementById('aliveRateValue');
+const aliveRateRange = document.getElementById('aliveRateRange');
+aliveRateRange.value = ALIVE_RATE;
+aliveRateSpan.textContent = `${ALIVE_RATE * 100}%`;
 
 const RGBToggle = document.getElementById('RGB-checkbox');
 
@@ -26,12 +37,6 @@ const continueButton = document.getElementById('continueButton');
 const removeButton = document.getElementById('removeButton');
 
 const genCounter = document.getElementById('genCount');
-
-const CELL_SCALE = 4; // scaling cells amount by dimension
-let CELL_COUNT_X = canvas.width / CELL_SCALE;
-let CELL_COUNT_Y = canvas.height / CELL_SCALE;
-
-const ALIVE_RATE = 0.3; // percentage of living cells in the first generation
 
 console.log('CANVAS DIMENSION ', canvas.width, canvas.height);
 console.log('CELL DIMENSION ', CELL_COUNT_X, CELL_COUNT_Y);
@@ -50,7 +55,6 @@ const initCells = (aliveRate) => {
       cellsArray.push(Math.random() < aliveRate ? 1 : 0);
     }
   }
-  console.log(cellsArray);
   return cellsArray;
 };
 
@@ -249,6 +253,10 @@ canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 RGBToggle.addEventListener('change', (e) => changeColor(e.target.checked));
 acceptFPSButton.addEventListener('click', () => acceptFPS());
 acceptDimensionButton.addEventListener('click', () => acceptCanvasDimension());
+aliveRateRange.addEventListener('input', (e) => {
+  ALIVE_RATE = +e.target.value;
+  aliveRateSpan.innerHTML = `${parseInt(+e.target.value * 100)}%`;
+});
 pauseButton.addEventListener('click', () => stopAnimation());
 continueButton.addEventListener('click', () => startAnimation());
 restartButton.addEventListener('click', () => restartAnimation());
