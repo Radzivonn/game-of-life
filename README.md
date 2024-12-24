@@ -16,7 +16,7 @@ live or dead; births and deaths occur simultaneously, and the discrete moment at
 The rules continue to be applied repeatedly to create further generations.
 
 ## Overview
-![image](https://github.com/user-attachments/assets/808130da-f33c-457a-a7cb-603cc402b1b0)
+![image](https://github.com/user-attachments/assets/9f414b3c-7388-4501-9822-b934d177240e)
 
 ## Game field
 ![image](https://github.com/user-attachments/assets/dcbcfff8-4ee4-4037-a205-9494879a362e)
@@ -25,7 +25,7 @@ The rules continue to be applied repeatedly to create further generations.
 ![image](https://github.com/user-attachments/assets/c1b8c8d2-b61e-4bf4-99c7-41975742b500)
 
 ## Сontrol panel
-![image](https://github.com/user-attachments/assets/c02bfab7-7a1d-417d-b578-8aa26e56fdca)
+![image](https://github.com/user-attachments/assets/d6ea011a-1c1c-4906-9e89-d11b7799ff11)
 
 * FPS counter
 * Toggle to turn on/off color pallette
@@ -34,11 +34,11 @@ The rules continue to be applied repeatedly to create further generations.
 * Continue button - unpauses the simulation
 * Remove button - "kills" all cells
 * FPS limit settings
+* canvas dimension settings
+* setting the percentage of “live” cells during restart
 
 The index_2d_array script implements a standard game on a 2d array  
 ![image](https://github.com/user-attachments/assets/9a55eb40-72b3-4b4c-a1ab-6182d30d0f60)
 
 The index_1d_array script implements the same game, but the field is implemented not on a 2d array, but on a 1d array  
 ![image](https://github.com/user-attachments/assets/177db26c-494d-460b-947d-d363c3575fc1)
-
-### All you need to start the game is to install the files in the same directory and open the index.html file in the browser!
