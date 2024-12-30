@@ -48,6 +48,24 @@ let animationID;
 let isPaused = true;
 let isPalletteON = false;
 
+const createColorPalette = () => {
+  const colorScale = CELL_SCALE;
+  const colors = [];
+  for (let y = 0; y < CELL_COUNT_Y; y++) {
+    for (let x = 0; x < CELL_COUNT_X; x++) {
+      const r = Math.floor(PALLETTE_K * y) * colorScale;
+      const g = Math.floor(355 - PALLETTE_K * x * colorScale);
+      const b = Math.floor(
+        100 - PALLETTE_K * y + Math.floor(x / PALLETTE_K - 100) * colorScale,
+      );
+      colors[y * CELL_COUNT_X + x] = `rgb(${r}, ${g}, ${b})`;
+    }
+  }
+  return colors;
+};
+
+let colorPalette = createColorPalette();
+
 const initCells = (aliveRate) => {
   cellsArray = [];
   for (let y = 0; y < CELL_COUNT_Y; y++) {
@@ -58,27 +76,18 @@ const initCells = (aliveRate) => {
   return cellsArray;
 };
 
-const setFillColorByCoord = (x, y) => {
-  const colorScale = CELL_SCALE;
-  ctx.fillStyle = `rgb(${Math.floor(PALLETTE_K * y) * colorScale}, ${Math.floor(
-    355 - PALLETTE_K * x * colorScale,
-  )}, ${Math.floor(
-    100 - PALLETTE_K * y + Math.floor(x / PALLETTE_K - 100) * colorScale,
-  )})`;
-};
-
-const drawCell = (x, y, isAlive) => {
-  if (isAlive) {
-    if (isPalletteON) setFillColorByCoord(x, y);
-    ctx.fillRect(x * CELL_SCALE, y * CELL_SCALE, CELL_SCALE, CELL_SCALE);
-  }
+const drawCell = (x, y) => {
+  if (isPalletteON) ctx.fillStyle = colorPalette[y * CELL_COUNT_X + x];
+  ctx.fillRect(x * CELL_SCALE, y * CELL_SCALE, CELL_SCALE, CELL_SCALE);
 };
 
 const drawCells = (cells) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let y = 0; y < CELL_COUNT_Y; y++) {
     for (let x = 0; x < CELL_COUNT_X; x++) {
-      drawCell(x, y, cells[y * CELL_COUNT_X + x]);
+      if (cells[y * CELL_COUNT_X + x]) {
+        drawCell(x, y);
+      }
     }
   }
 };
@@ -228,6 +237,7 @@ acceptCanvasDimension = () => {
     fieldWidthInput.value = '';
     fieldHeightInput.value = '';
     if (!isPalletteON) ctx.fillStyle = 'white';
+    colorPalette = createColorPalette();
     restartAnimation();
   }
 };
