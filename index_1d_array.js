@@ -71,19 +71,16 @@ const drawCell = (x, y, isAlive) => {
   if (isAlive) {
     if (isPalletteON) setFillColorByCoord(x, y);
     ctx.fillRect(x * CELL_SCALE, y * CELL_SCALE, CELL_SCALE, CELL_SCALE);
-  } else ctx.clearRect(x * CELL_SCALE, y * CELL_SCALE, CELL_SCALE, CELL_SCALE);
+  }
 };
 
 const drawCells = (cells) => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let y = 0; y < CELL_COUNT_Y; y++) {
     for (let x = 0; x < CELL_COUNT_X; x++) {
       drawCell(x, y, cells[y * CELL_COUNT_X + x]);
     }
   }
-};
-
-const drawField = (cells) => {
-  drawCells(cells);
 };
 
 /* functions to check for out of bounds fields to implement a looping field */
@@ -161,7 +158,7 @@ const animate = (timestamp) => {
     countFPS(timestamp);
     lastTimestamp = timestamp;
     cells = getNewGeneration(cells);
-    drawField(cells);
+    drawCells(cells);
     generationCounter++;
     genCounter.innerHTML = generationCounter;
   }
