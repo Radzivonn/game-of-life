@@ -1,6 +1,7 @@
 const canvas = document.getElementById('mainCanvas');
 const ctx = canvas.getContext('2d');
 ctx.fillStyle = 'white';
+canvas.style.width = '100%';
 
 let FPS_LIMIT = 144;
 let FPS = 0;
@@ -10,11 +11,19 @@ let frameCount = 0;
 
 const PALLETTE_K = 1.2; // RGB casting factor
 
-const CELL_SCALE = 4; // scaling cells amount by dimension
-let CELL_COUNT_X = canvas.width / CELL_SCALE;
-let CELL_COUNT_Y = canvas.height / CELL_SCALE;
+let CELL_SCALE = 4; // scaling cells amount and their size by dimension
+let CELL_COUNT_X = Math.round(canvas.width / CELL_SCALE);
+let CELL_COUNT_Y = Math.round(canvas.height / CELL_SCALE);
 
 let ALIVE_RATE = 0.3; // percentage of living cells in the first generation
+
+const cellsScaleRange = document.getElementById('cellsScaleRange');
+const cellsScaleSpan = document.getElementById('cellsScaleValue');
+const acceptCellsScaleButton = document.getElementById(
+  'acceptCellsScaleButton',
+);
+cellsScaleRange.value = CELL_SCALE;
+cellsScaleSpan.textContent = CELL_SCALE;
 
 const fpsCounter = document.getElementById('fpsCounter');
 const fpsInput = document.getElementById('fpsInput');
@@ -233,10 +242,19 @@ const acceptFPS = () => {
 };
 
 changeFieldDimension = (width, height) => {
+  canvas.style.width = `${width}px`;
   canvas.width = width;
   canvas.height = height;
-  CELL_COUNT_X = width / CELL_SCALE;
-  CELL_COUNT_Y = height / CELL_SCALE;
+  CELL_COUNT_X = Math.round(width / CELL_SCALE);
+  CELL_COUNT_Y = Math.round(height / CELL_SCALE);
+};
+
+changeCellsScale = (scale) => {
+  CELL_SCALE = scale;
+  CELL_COUNT_X = Math.round(canvas.width / CELL_SCALE);
+  CELL_COUNT_Y = Math.round(canvas.height / CELL_SCALE);
+  colorPalette = createColorPalette();
+  restartAnimation();
 };
 
 acceptCanvasDimension = () => {
@@ -277,6 +295,12 @@ aliveRateRange.addEventListener('input', (e) => {
   ALIVE_RATE = +e.target.value;
   aliveRateSpan.innerHTML = `${parseInt(+e.target.value * 100)}%`;
 });
+cellsScaleRange.addEventListener('input', (e) => {
+  cellsScaleSpan.innerHTML = e.target.value;
+});
+acceptCellsScaleButton.addEventListener('click', () =>
+  changeCellsScale(+cellsScaleRange.value),
+);
 pauseButton.addEventListener('click', () => stopAnimation());
 continueButton.addEventListener('click', () => startAnimation());
 restartButton.addEventListener('click', () => restartAnimation());
