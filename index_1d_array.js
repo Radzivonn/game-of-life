@@ -37,6 +37,7 @@ const continueButton = document.getElementById('continueButton');
 const removeButton = document.getElementById('removeButton');
 
 const genCounter = document.getElementById('genCount');
+const populationCounter = document.getElementById('populationCounter');
 
 console.log('CANVAS DIMENSION ', canvas.width, canvas.height);
 console.log('CELL DIMENSION ', CELL_COUNT_X, CELL_COUNT_Y);
@@ -147,6 +148,16 @@ const getNewGeneration = (cells) => {
   return newGeneration;
 };
 
+const countPopulation = (cells) => {
+  let counter = 0;
+  for (let y = 0; y < CELL_COUNT_Y; y++) {
+    for (let x = 0; x < CELL_COUNT_X; x++) {
+      if (cells[y * CELL_COUNT_X + x]) counter++;
+    }
+  }
+  return counter;
+};
+
 const countFPS = (timestamp) => {
   frameCount++;
   if (lastTimestampFPSCounter !== 0) {
@@ -170,6 +181,7 @@ const animate = (timestamp) => {
     drawCells(cells);
     generationCounter++;
     genCounter.innerHTML = generationCounter;
+    populationCounter.innerHTML = countPopulation(cells);
   }
   animationID = requestAnimationFrame((timestamp) => animate(timestamp));
 };
@@ -201,6 +213,7 @@ const removeAll = () => {
   cells = initCells(0);
   generationCounter = 0;
   genCounter.innerHTML = generationCounter;
+  populationCounter.innerHTML = 0;
   drawCells(cells);
 };
 
