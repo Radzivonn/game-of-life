@@ -39,7 +39,6 @@ img {
   width: 100%;
   display: flex;
   padding: 16px;
-  background-color: inherit;
 }
 
 main {
@@ -64,6 +63,7 @@ span {
 }
 
 #mainCanvas {
+  width: 100%;
   max-width: 1280px;
   max-height: 720px;
   border: 2px white solid;
