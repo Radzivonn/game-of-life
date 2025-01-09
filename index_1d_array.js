@@ -281,12 +281,33 @@ const drawCellsByMouse = (e) => {
     const x = Math.floor(e.offsetX / CELL_SCALE);
     const y = Math.floor(e.offsetY / CELL_SCALE);
     cells[y * CELL_COUNT_X + x] = e.buttons === 1 ? 1 : 0;
-    if (isPaused) drawCell(x, y, e.buttons === 1);
+    if (isPaused) drawCell(x, y);
   }
 };
 
-canvas.addEventListener('mousedown', (e) => drawCellsByMouse(e));
-canvas.addEventListener('mousemove', (e) => drawCellsByMouse(e));
+const drawCellsByTouch = (e) => {
+  const touch = e.touches[0];
+  if (touch) {
+    const x = Math.floor((touch.clientX - canvas.offsetLeft) / CELL_SCALE);
+    const y = Math.floor((touch.clientY - canvas.offsetTop) / CELL_SCALE);
+    cells[y * CELL_COUNT_X + x] = 1;
+    if (isPaused) drawCell(x, y);
+  }
+};
+
+const isTouchDevice = () =>
+  'ontouchstart' in window ||
+  navigator.maxTouchPoints > 0 ||
+  navigator.msMaxTouchPoints > 0;
+
+if (isTouchDevice()) {
+  canvas.addEventListener('touchstart', (e) => drawCellsByTouch(e));
+  canvas.addEventListener('touchmove', (e) => drawCellsByTouch(e));
+} else {
+  canvas.addEventListener('mousedown', (e) => drawCellsByMouse(e));
+  canvas.addEventListener('mousemove', (e) => drawCellsByMouse(e));
+}
+
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 RGBToggle.addEventListener('change', (e) => changeColor(e.target.checked));
 acceptFPSButton.addEventListener('click', () => acceptFPS());
